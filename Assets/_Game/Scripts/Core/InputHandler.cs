@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace NeonSyndicate.Core
 {
     /// <summary>
-    /// Unity Input System ile entegre çalışan input yöneticisi.
+    /// Unity NEW Input System ile entegre çalışan input yöneticisi.
     /// Tuş kombinasyonlarını (combo) algılayıp event fırlatır.
     /// </summary>
     public class InputHandler : MonoBehaviour
@@ -56,26 +57,42 @@ namespace NeonSyndicate.Core
 
         private void ReadInputs()
         {
-            // Movement (WASD + Arrow Keys)
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-            MovementInput = new Vector2(horizontal, vertical);
+            // NEW INPUT SYSTEM kullanımı
+            var keyboard = Keyboard.current;
+            var mouse = Mouse.current;
 
-            // Attack buttons
-            IsAttackPressed = Input.GetButtonDown("Fire1"); // J veya Sol Mouse
-            IsHeavyAttackPressed = Input.GetButtonDown("Fire2"); // K veya Sağ Mouse
+            if (keyboard == null) return; // Input device yoksa çık
+
+            // Movement (WASD + Arrow Keys)
+            Vector2 moveInput = Vector2.zero;
             
-            // Jump
-            IsJumpPressed = Input.GetButtonDown("Jump"); // Space
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) moveInput.y += 1;
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) moveInput.y -= 1;
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) moveInput.x -= 1;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) moveInput.x += 1;
             
-            // Dodge/Dash
-            IsDodgePressed = Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
+            MovementInput = moveInput.normalized;
+
+            // Attack buttons (Z veya Sol Mouse)
+            IsAttackPressed = keyboard.zKey.wasPressedThisFrame || 
+                             (mouse != null && mouse.leftButton.wasPressedThisFrame);
             
-            // Grab
-            IsGrabPressed = Input.GetKeyDown(KeyCode.E);
+            // Heavy attack (X veya Sağ Mouse)
+            IsHeavyAttackPressed = keyboard.xKey.wasPressedThisFrame || 
+                                  (mouse != null && mouse.rightButton.wasPressedThisFrame);
             
-            // Run/Sprint
-            IsRunPressed = Input.GetKey(KeyCode.LeftShift);
+            // Jump (Space)
+            IsJumpPressed = keyboard.spaceKey.wasPressedThisFrame;
+            
+            // Dodge/Dash (Shift tap)
+            IsDodgePressed = keyboard.leftShiftKey.wasPressedThisFrame || 
+                            keyboard.rightShiftKey.wasPressedThisFrame;
+            
+            // Grab (C)
+            IsGrabPressed = keyboard.cKey.wasPressedThisFrame;
+            
+            // Run/Sprint (Shift hold)
+            IsRunPressed = keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed;
         }
 
         private void ProcessInputs()

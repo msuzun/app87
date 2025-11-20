@@ -67,7 +67,7 @@ namespace NeonSyndicate.Player
             }
 
             // Check run input
-            isRunning = Input.GetKey(KeyCode.LeftShift) && staminaCurrent > 0;
+            isRunning = InputHandler.Instance.IsRunPressed && staminaCurrent > 0;
             
             // Consume stamina while running
             if (isRunning && InputHandler.Instance.MovementInput.magnitude > 0.1f)

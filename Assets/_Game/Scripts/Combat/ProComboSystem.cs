@@ -81,25 +81,27 @@ namespace NeonSyndicate.Combat
         #region Input Handling
         /// <summary>
         /// Inputları okur ve buffer'a kaydeder.
+        /// NEW INPUT SYSTEM kullanımı.
         /// </summary>
         private void ReadInputs()
         {
-            if (Input.GetKeyDown(KeyCode.Z))
+            // InputHandler'dan input al (zaten New Input System kullanıyor)
+            if (InputHandler.Instance.IsAttackPressed)
             {
                 inputBuffer.RegisterInput(InputType.Light);
             }
 
-            if (Input.GetKeyDown(KeyCode.X))
+            if (InputHandler.Instance.IsHeavyAttackPressed)
             {
                 inputBuffer.RegisterInput(InputType.Heavy);
             }
 
-            if (Input.GetKeyDown(KeyCode.C))
+            if (InputHandler.Instance.IsGrabPressed)
             {
                 inputBuffer.RegisterInput(InputType.Special);
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (InputHandler.Instance.IsJumpPressed)
             {
                 inputBuffer.RegisterInput(InputType.Jump);
             }

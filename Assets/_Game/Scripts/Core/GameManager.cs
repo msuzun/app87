@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 namespace NeonSyndicate.Core
 {
@@ -50,8 +51,9 @@ namespace NeonSyndicate.Core
 
         private void Update()
         {
-            // ESC tuşu ile pause
-            if (Input.GetKeyDown(KeyCode.Escape))
+            // ESC tuşu ile pause (NEW Input System)
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
             {
                 TogglePause();
             }

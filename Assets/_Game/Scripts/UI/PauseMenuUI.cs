@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using TMPro;
 using NeonSyndicate.Core;
 #if DOTWEEN_ENABLED
@@ -65,8 +66,9 @@ namespace NeonSyndicate.UI
 
         private void Update()
         {
-            // ESC tuşu (Input System ile de yapılabilir)
-            if (Input.GetKeyDown(KeyCode.Escape))
+            // ESC tuşu (NEW Input System)
+            var keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
             {
                 TogglePause();
             }
