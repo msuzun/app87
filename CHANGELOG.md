@@ -119,6 +119,67 @@ Bu dosya, projedeki önemli değişiklikleri takip eder.
 
 ---
 
+## [Animation System] - 2024
+
+### 🎬 Yeni Özellikler
+
+#### **Event-Driven Animation System**
+- ✨ `AnimData.cs` - Animation constants (60+ constant)
+- ✨ `AnimationEventReceiver.cs` - Unity Animation Event → C# Event bridge
+- ✨ `CharacterAnimator.cs` - Wrapper (Unity Animator)
+- ✨ `CharacterAnimatorSpine.cs` - Wrapper (Spine 2D support)
+- ✨ `PlayerCombatAnimated.cs` - Event-driven combat örneği
+
+#### **Frame-Perfect Combat**
+- ✨ Hitbox tam vuruş karesinde aktif
+- ✨ Animation event ile kontrol
+- ✨ Combo cancel windows (event-driven)
+- ✨ I-Frame system (dodge)
+- ✨ VFX spawn (timeline-based)
+- ✨ Camera shake (intensity parameter)
+
+#### **Spine Support**
+- ✨ Optional Spine 2D entegrasyonu
+- ✨ Spine Event → Unity Event bridge
+- ✨ Mix duration kontrolü
+- ✨ Aynı API (teknoloji bağımsız)
+
+#### **ProComboSystem Updates**
+- ✨ ComboMoveSO genişletildi (15+ parametre)
+- ✨ Branching combo support
+- ✨ Input buffering (0.2s)
+- ✨ Cancel windows (timing-based)
+- ✨ Hit stop implementation
+
+#### **Dokümantasyon**
+- 📚 `ANIMATION_SYSTEM.md` - Animation system rehberi
+- 📚 `PRO_COMBO_GUIDE.md` - Combo system rehberi
+- 📚 `ENEMY_AI_DESIGN.md` - AI tasarım dokümanı
+- 📚 `ENEMY_AI_USAGE.md` - AI kullanım rehberi
+
+### ♻️ Değişiklikler
+
+#### **Combat/Hitbox.cs**
+- Updated: ProComboSystem entegrasyonu
+- Updated: Hit confirm callback
+
+#### **PlayerCombat.cs**
+- Updated: Air attack support
+- Updated: Attack momentum
+- Added: Animation Event callbacks
+
+### 🎨 Yeni Dosyalar
+- `AnimData.cs` (200+ satır)
+- `AnimationEventReceiver.cs` (300+ satır)
+- `CharacterAnimator.cs` (400+ satır)
+- `CharacterAnimatorSpine.cs` (200+ satır)
+- `PlayerCombatAnimated.cs` (300+ satır)
+- `ComboMoveSO.cs` (150+ satır)
+- `InputBuffer.cs` (200+ satır)
+- `ProComboSystem.cs` (400+ satır)
+
+---
+
 ## 🔜 Gelecek Güncellemeler
 
 ### Version 1.1 (Planlanıyor)
