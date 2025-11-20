@@ -17,6 +17,7 @@ namespace NeonSyndicate.Core
         public bool IsJumpPressed { get; private set; }
         public bool IsDodgePressed { get; private set; }
         public bool IsGrabPressed { get; private set; }
+        public bool IsRunPressed { get; private set; }
 
         [Header("Combo Detection")]
         [SerializeField] private float comboWindowTime = 0.5f;
@@ -72,6 +73,9 @@ namespace NeonSyndicate.Core
             
             // Grab
             IsGrabPressed = Input.GetKeyDown(KeyCode.E);
+            
+            // Run/Sprint
+            IsRunPressed = Input.GetKey(KeyCode.LeftShift);
         }
 
         private void ProcessInputs()

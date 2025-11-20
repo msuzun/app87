@@ -10,6 +10,7 @@ Siber-noir atmosferde, Crazy Flasher serisinin akıcı dövüş hissiyle modern 
 
 - [Oyun Hakkında](#oyun-hakkında)
 - [Özellikler](#özellikler)
+- [🔥 Hibrit Sistem](#-hibrit-sistem)
 - [Teknik Mimari](#teknik-mimari)
 - [Kurulum](#kurulum)
 - [Kullanım](#kullanım)
@@ -46,10 +47,13 @@ Siber-noir atmosferde, Crazy Flasher serisinin akıcı dövüş hissiyle modern 
 
 ### 🎮 Karakter Mekanikleri
 - **Z-Axis Movement**: Derinlikli 2.5D hareket
-- **Dodge/Dash**: I-frame (invulnerability) ile kaçınma
+- **Run/Sprint**: Shift ile koşma (stamina tüketir)
+- **Fake Height Jump**: Coroutine bazlı parabolic jump (shadow yerde kalır)
+- **Dodge/Dash**: I-frame (invulnerability) ile kaçınma + stamina cost
+- **Air Control**: Havada hareket ve saldırı yapabilme
 - **Grab System**: Düşmanları yakalayıp fırlatma
 - **Weapon Pickup**: Sopa, bıçak gibi silahları kullanma
-- **Stamina Barı**: Spam yapmayı engelleyen dayanıklılık sistemi
+- **Stamina Barı**: Sprint ve dodge için dayanıklılık sistemi
 
 ### 🤖 Düşman AI
 - **Token System**: Aynı anda en fazla 2 düşman saldırır
@@ -65,14 +69,39 @@ Siber-noir atmosferde, Crazy Flasher serisinin akıcı dövüş hissiyle modern 
 
 ---
 
+## 🔥 Hibrit Sistem
+
+**Best of Both Worlds!** Bu proje, **Class-Based FSM** ve **Coroutine-Based Actions** yaklaşımlarını birleştirir:
+
+### Class-Based FSM (State Management)
+```csharp
+✅ Modüler state sınıfları (7 ayrı dosya)
+✅ Temiz state geçişleri
+✅ SOLID prensipleri
+✅ Test edilebilir kod
+```
+
+### Coroutine-Based Actions (Timing Operations)
+```csharp
+✅ Akıcı jump/dash mekanikleri
+✅ Fake height jump (2.5D)
+✅ Doğal timing ve lerp işlemleri
+✅ Interrupt edilebilir aksiyonlar
+```
+
+**Detaylı Bilgi**: [HYBRID_SYSTEM.md](HYBRID_SYSTEM.md) dosyasını okuyun! 📖
+
+---
+
 ## 🏗️ Teknik Mimari
 
 ### Kullanılan Teknolojiler
 - **Engine**: Unity 2D (2021.3+)
 - **Language**: C#
-- **Architecture**: Composition over Inheritance
+- **Architecture**: Hybrid System (FSM + Coroutines)
 - **Design Patterns**: 
-  - Finite State Machine (FSM)
+  - Finite State Machine (Class-Based)
+  - Coroutine-Based Actions
   - Object Pooling
   - Singleton (Managers için)
   - ScriptableObject (Data)
@@ -154,12 +183,15 @@ Active Input Handling: Input System Package (New)
 | Tuş | Aksiyon |
 |-----|---------|
 | **WASD / Arrow Keys** | Hareket (2.5D) |
-| **J / Left Mouse** | Light Attack (Hafif Saldırı) |
-| **K / Right Mouse** | Heavy Attack (Ağır Saldırı) |
+| **Z / Left Mouse** | Light Attack (Hafif Saldırı) |
+| **X / Right Mouse** | Heavy Attack (Ağır Saldırı) |
 | **Space** | Jump (Zıplama) |
-| **Shift** | Dodge/Dash |
-| **E** | Grab (Yakalama) |
+| **Shift (Hold)** | Run/Sprint |
+| **Shift (Tap)** | Dodge/Dash (i-frame) |
+| **C** | Grab (Yakalama) |
 | **ESC** | Pause |
+
+**Detaylı Kontroller**: [CONTROLS.md](CONTROLS.md) dosyasını okuyun!
 
 ### Combo Örnekleri
 

@@ -6,13 +6,15 @@ namespace NeonSyndicate.Player
 {
     /// <summary>
     /// Oyuncu saldırı yaparken (Attack) state.
-    /// Combo sistemi burada işlenir.
+    /// HYBRID: Responsive combo sistemi.
+    /// Air attack desteği ile Crazy Flasher tarzı havada dövüş.
     /// </summary>
     public class PlayerAttackState : StateBase
     {
         private PlayerStateMachine playerSM;
         private float attackTimer;
         private bool attackComplete;
+        private float attackDuration = 0.4f; // Her saldırının süresi
 
         public PlayerAttackState(StateMachineController stateMachine) : base(stateMachine)
         {
@@ -24,50 +26,92 @@ namespace NeonSyndicate.Player
             attackTimer = 0f;
             attackComplete = false;
 
-            // Hareketi durdur
-            playerSM.Rb.velocity = Vector2.zero;
+            // Hareketi durdur (yer saldırısı için)
+            if (playerSM.Controller.isGrounded)
+            {
+                playerSM.Rb.velocity = Vector2.zero;
+            }
 
             // Combo sistemini tetikle
             playerSM.Combat.ExecuteNextCombo();
-
-            // Ses efekti
-            SoundManager.Instance?.PlaySFX("Whoosh_Attack");
+            
+            // Animator'a bildir
+            playerSM.Animator.SetBool("IsAttacking", true);
         }
 
         public override void Update()
         {
             attackTimer += Time.deltaTime;
 
-            // Animasyon bittiğinde (örn: 0.5 saniye)
-            if (attackTimer >= 0.5f)
+            // Animasyon bitme süresi (Animation Event ile daha hassas yapılabilir)
+            if (attackTimer >= attackDuration)
             {
                 attackComplete = true;
             }
 
-            // Combo penceresi içinde tekrar saldırı tuşuna basıldıysa
+            // COMBO WINDOW: Belirli bir süre içinde tekrar tuşa basılırsa combo devam eder
             if (InputHandler.Instance.IsAttackPressed && playerSM.Combat.CanContinueCombo())
             {
-                // Aynı state'te kal ama combonun sonraki adımına geç
+                // Combo'nun sonraki adımına geç
                 Enter(); // State'i resetle
+                return;
             }
 
-            // Saldırı tamamlandıysa Idle'a dön
+            // Heavy attack ile launcher yapılabilir (havaya kaldırma)
+            if (InputHandler.Instance.IsHeavyAttackPressed && playerSM.Combat.CanContinueCombo())
+            {
+                ExecuteHeavyAttack();
+                return;
+            }
+
+            // Havadayken zıplama ile combo uzatabilme (Juggle)
+            if (!playerSM.Controller.isGrounded && InputHandler.Instance.IsJumpPressed)
+            {
+                playerSM.ChangeState(playerSM.JumpState);
+                return;
+            }
+
+            // Saldırı tamamlandıysa Idle veya Walk'a dön
             if (attackComplete)
             {
-                playerSM.ChangeState(playerSM.IdleState);
+                // Input varsa direkt Walk'a geç (responsive)
+                if (InputHandler.Instance.MovementInput.magnitude > 0.1f)
+                {
+                    playerSM.ChangeState(playerSM.WalkState);
+                }
+                else
+                {
+                    playerSM.ChangeState(playerSM.IdleState);
+                }
             }
         }
 
         public override void FixedUpdate()
         {
-            // Saldırı sırasında hafif ileri hareket (momentum)
-            Vector2 attackDirection = playerSM.SpriteRenderer.flipX ? Vector2.left : Vector2.right;
-            playerSM.Rb.velocity = attackDirection * 2f;
+            // Saldırı sırasında hafif ileri hareket (momentum) - Combat tarafından yapılıyor
+            // Havadayken momentum korunur
         }
 
         public override void Exit()
         {
             playerSM.Animator.SetBool("IsAttacking", false);
+            
+            // Hitbox'ları temizle (güvenlik)
+            playerSM.Combat.DeactivateHitboxes();
+        }
+
+        /// <summary>
+        /// Heavy attack (Launcher) çalıştırır.
+        /// </summary>
+        private void ExecuteHeavyAttack()
+        {
+            attackTimer = 0f;
+            attackComplete = false;
+            
+            playerSM.Animator.Play("Attack_Heavy");
+            SoundManager.Instance?.PlaySFX("Heavy_Attack");
+            
+            Debug.Log("Heavy Attack (Launcher)!");
         }
     }
 }

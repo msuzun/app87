@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using NeonSyndicate.StateMachine;
 using NeonSyndicate.Core;
 
@@ -6,15 +7,13 @@ namespace NeonSyndicate.Player
 {
     /// <summary>
     /// Oyuncu dodge (kaçınma) yaparken state.
+    /// HYBRID: Coroutine bazlı dash sistemi.
     /// İ-Frame (invulnerability) sağlar.
     /// </summary>
     public class PlayerDodgeState : StateBase
     {
         private PlayerStateMachine playerSM;
-        private float dodgeDuration = 0.3f;
-        private float dodgeSpeed = 15f;
-        private float dodgeTimer;
-        private Vector2 dodgeDirection;
+        private bool dodgeComplete = false;
 
         public PlayerDodgeState(StateMachineController stateMachine) : base(stateMachine)
         {
@@ -23,34 +22,23 @@ namespace NeonSyndicate.Player
 
         public override void Enter()
         {
-            dodgeTimer = 0f;
+            dodgeComplete = false;
 
-            // Dodge yönünü belirle (input varsa ona göre, yoksa baktığı yöne)
-            Vector2 input = InputHandler.Instance.MovementInput;
-            if (input.magnitude > 0.1f)
-            {
-                dodgeDirection = input.normalized;
-            }
-            else
-            {
-                dodgeDirection = playerSM.SpriteRenderer.flipX ? Vector2.left : Vector2.right;
-            }
-
-            // I-Frame aktif et
-            playerSM.Controller.SetInvulnerable(dodgeDuration);
-
+            // Stamina kontrolü (PlayerController'da yapılıyor)
             // Animasyon
             playerSM.Animator.SetTrigger("Dodge");
 
             // Ses efekti
             SoundManager.Instance?.PlaySFX("Dodge_Whoosh");
+
+            // Coroutine başlat
+            playerSM.Controller.StartActionCoroutine(DashWithCallback());
         }
 
         public override void Update()
         {
-            dodgeTimer += Time.deltaTime;
-
-            if (dodgeTimer >= dodgeDuration)
+            // Dash tamamlandığında Idle'a dön
+            if (dodgeComplete)
             {
                 playerSM.ChangeState(playerSM.IdleState);
             }
@@ -58,13 +46,21 @@ namespace NeonSyndicate.Player
 
         public override void FixedUpdate()
         {
-            // Hızlı ileri hareket (dash)
-            playerSM.Rb.velocity = dodgeDirection * dodgeSpeed;
+            // Fizik PlayerController'daki coroutine tarafından yönetiliyor
         }
 
         public override void Exit()
         {
             playerSM.Rb.velocity = Vector2.zero;
+        }
+
+        /// <summary>
+        /// Dash coroutine'i callback ile sarmalayan wrapper.
+        /// </summary>
+        private IEnumerator DashWithCallback()
+        {
+            yield return playerSM.Controller.DashCoroutine();
+            dodgeComplete = true;
         }
     }
 }

@@ -49,7 +49,16 @@ namespace NeonSyndicate.Player
                 currentStyle -= styleDecayRate * Time.deltaTime;
                 currentStyle = Mathf.Max(0, currentStyle);
             }
+
+            // Combo timeout kontrolü (ek güvenlik)
+            // ComboSystem zaten yapıyor ama double-check
+            if (Time.time - lastAttackTime > 1.5f && comboSystem.CurrentComboIndex > 0)
+            {
+                comboSystem.ResetCombo();
+            }
         }
+        
+        private float lastAttackTime;
 
         #region Combo Execution
         /// <summary>
@@ -57,7 +66,19 @@ namespace NeonSyndicate.Player
         /// </summary>
         public void ExecuteNextCombo()
         {
+            lastAttackTime = Time.time;
+            
+            // Air attack kontrolü
+            if (!controller.isGrounded)
+            {
+                ExecuteAirAttack();
+                return;
+            }
+            
             comboSystem.ExecuteNextAttack();
+            
+            // Momentum ekle (Crazy Flasher hissi için)
+            ApplyAttackMomentum();
         }
 
         /// <summary>
@@ -67,11 +88,38 @@ namespace NeonSyndicate.Player
         {
             return comboSystem.CanContinueCombo();
         }
+
+        /// <summary>
+        /// Havada saldırı yapar.
+        /// </summary>
+        private void ExecuteAirAttack()
+        {
+            // Air attack animasyonu
+            controller.Animator.Play("Attack_Air");
+            
+            // Havada kısa süre asılı kalma (Gravity defying - Crazy Flasher tarzı)
+            controller.Rb.velocity = Vector2.zero;
+            
+            // Hitbox aktivasyonu
+            controller.Invoke("ActivateKickHitbox", 0.1f);
+            
+            Debug.Log("Air Attack!");
+        }
+
+        /// <summary>
+        /// Saldırı sırasında hafif ileri momentum (Crazy Flasher hissi).
+        /// </summary>
+        private void ApplyAttackMomentum()
+        {
+            Vector2 attackDirection = controller.isFacingRight ? Vector2.right : Vector2.left;
+            controller.Rb.velocity = attackDirection * 2f; // Hafif ileri hareket
+        }
         #endregion
 
         #region Hitbox Activation (Animation Events'ten çağrılır)
         /// <summary>
         /// Yumruk hitbox'ını aktifleştirir (Animator Event).
+        /// Animasyonun vuruş karesinde çağrılmalı (örn: frame 3).
         /// </summary>
         public void ActivatePunchHitbox()
         {
@@ -79,11 +127,15 @@ namespace NeonSyndicate.Player
             {
                 float damage = comboSystem.GetCurrentDamage();
                 punchHitbox.Activate(transform, damage);
+                
+                // Ses efekti
+                SoundManager.Instance?.PlaySFX("Whoosh_Attack");
             }
         }
 
         /// <summary>
         /// Tekme hitbox'ını aktifleştirir (Animator Event).
+        /// Animasyonun vuruş karesinde çağrılmalı (örn: frame 4).
         /// </summary>
         public void ActivateKickHitbox()
         {
@@ -91,16 +143,33 @@ namespace NeonSyndicate.Player
             {
                 float damage = comboSystem.GetCurrentDamage();
                 kickHitbox.Activate(transform, damage);
+                
+                // Ses efekti
+                SoundManager.Instance?.PlaySFX("Whoosh_Kick");
             }
         }
 
         /// <summary>
         /// Hitbox'ları deaktif eder (Animator Event).
+        /// Animasyonun bitişinde çağrılmalı.
         /// </summary>
         public void DeactivateHitboxes()
         {
             punchHitbox?.Deactivate();
             kickHitbox?.Deactivate();
+        }
+
+        /// <summary>
+        /// Saldırı animasyonu tamamlandığında çağrılır (Animator Event).
+        /// State'i Idle'a döndürür.
+        /// </summary>
+        public void OnAttackComplete()
+        {
+            // State Machine'e bildir
+            if (controller.StateMachine.CurrentState == controller.StateMachine.AttackState)
+            {
+                controller.StateMachine.ChangeState(controller.StateMachine.IdleState);
+            }
         }
         #endregion
 

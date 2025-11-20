@@ -56,15 +56,20 @@ namespace NeonSyndicate.Player
         {
             Vector2 input = InputHandler.Instance.MovementInput;
             
+            // Run/Sprint sistemi
+            float currentSpeed = playerSM.Controller.MoveSpeed;
+            if (playerSM.Controller.isRunning)
+            {
+                currentSpeed *= playerSM.Controller.RunSpeedMultiplier;
+            }
+            
             // 2.5D hareket (X = sağ/sol, Y = derinlik)
-            Vector2 movement = input.normalized * playerSM.Controller.MoveSpeed;
+            Vector2 movement = input.normalized * currentSpeed;
             playerSM.Rb.velocity = movement;
 
-            // Sprite flip (sağa/sola bakma)
-            if (input.x != 0)
-            {
-                playerSM.SpriteRenderer.flipX = input.x < 0;
-            }
+            // Animator parametrelerini güncelle
+            playerSM.Animator.SetBool("IsRunning", playerSM.Controller.isRunning);
+            playerSM.Animator.SetFloat("Speed", input.magnitude);
         }
 
         public override void Exit()

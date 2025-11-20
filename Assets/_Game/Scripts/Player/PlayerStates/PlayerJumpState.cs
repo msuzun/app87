@@ -1,20 +1,19 @@
 using UnityEngine;
+using System.Collections;
 using NeonSyndicate.StateMachine;
+using NeonSyndicate.Core;
 
 namespace NeonSyndicate.Player
 {
     /// <summary>
     /// Oyuncu zıpladığında (Jump) state.
+    /// HYBRID: Coroutine bazlı fake height jump sistemi.
     /// Crazy Flasher'daki "havada kombo" mekanizması için temel.
     /// </summary>
     public class PlayerJumpState : StateBase
     {
         private PlayerStateMachine playerSM;
-        private float jumpHeight = 2f;
-        private float jumpDuration = 0.6f;
-        private float jumpTimer;
-        private Vector3 startPosition;
-        private GameObject shadowObject;
+        private bool jumpComplete = false;
 
         public PlayerJumpState(StateMachineController stateMachine) : base(stateMachine)
         {
@@ -23,35 +22,30 @@ namespace NeonSyndicate.Player
 
         public override void Enter()
         {
-            jumpTimer = 0f;
-            startPosition = playerSM.transform.position;
+            jumpComplete = false;
 
             // Zıplama animasyonu
             playerSM.Animator.SetTrigger("Jump");
+            
+            // Ses efekti
+            SoundManager.Instance?.PlaySFX("Jump");
 
-            // Gölgeyi yerinde tut (shadow prefab'ı varsa)
-            CreateShadow();
+            // Coroutine başlat (PlayerController'dan)
+            playerSM.Controller.StartActionCoroutine(JumpWithCallback());
         }
 
         public override void Update()
         {
-            jumpTimer += Time.deltaTime;
-
-            // Parabolic jump (yukarı çık, sonra aşağı in)
-            float progress = jumpTimer / jumpDuration;
-            float height = Mathf.Sin(progress * Mathf.PI) * jumpHeight;
-
-            Vector3 newPos = startPosition + Vector3.up * height;
-            playerSM.transform.position = newPos;
-
-            // Havadayken saldırı yapabilme
+            // Havadayken saldırı yapabilme (Air combo)
             if (InputHandler.Instance.IsAttackPressed)
             {
+                playerSM.Controller.StopCurrentAction();
                 playerSM.ChangeState(playerSM.AttackState);
+                return;
             }
 
-            // Zıplama tamamlandı
-            if (jumpTimer >= jumpDuration)
+            // Coroutine tamamlandığında Idle'a dön
+            if (jumpComplete)
             {
                 playerSM.ChangeState(playerSM.IdleState);
             }
@@ -59,36 +53,21 @@ namespace NeonSyndicate.Player
 
         public override void FixedUpdate()
         {
-            // Havadayken hafif hareket edebilme
-            Vector2 input = InputHandler.Instance.MovementInput;
-            playerSM.Rb.velocity = input.normalized * (playerSM.Controller.MoveSpeed * 0.5f);
+            // Fizik PlayerController'daki coroutine tarafından yönetiliyor
         }
 
         public override void Exit()
         {
-            // Gölgeyi temizle
-            if (shadowObject != null)
-            {
-                Object.Destroy(shadowObject);
-            }
-
-            playerSM.transform.position = new Vector3(
-                playerSM.transform.position.x,
-                startPosition.y,
-                playerSM.transform.position.z
-            );
+            playerSM.Controller.isGrounded = true;
         }
 
-        private void CreateShadow()
+        /// <summary>
+        /// Jump coroutine'i callback ile sarmalayan wrapper.
+        /// </summary>
+        private IEnumerator JumpWithCallback()
         {
-            // Basit bir gölge oluştur (placeholder)
-            // Gerçek üretimde shadow sprite prefab kullanılmalı
-            shadowObject = new GameObject("Shadow");
-            shadowObject.transform.position = startPosition;
-            
-            SpriteRenderer shadowSR = shadowObject.AddComponent<SpriteRenderer>();
-            shadowSR.color = new Color(0, 0, 0, 0.5f);
-            shadowSR.sortingOrder = -1;
+            yield return playerSM.Controller.JumpCoroutine();
+            jumpComplete = true;
         }
     }
 }
