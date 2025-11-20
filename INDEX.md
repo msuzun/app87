@@ -189,6 +189,22 @@ Konu: AI kullanım rehberi
 
 ---
 
+### 🗺️ Level Design (1 dosya)
+
+#### 17. **LEVEL_DESIGN.md** (3000+ satır)
+```
+Konu: Level design sistemi
+İçerik:
+  - 4 level tasarımı (detaylı)
+  - Wave system
+  - Camera lock mekanizması
+  - Parallax setup
+  - Auto-scroll (metro)
+  - Destructibles
+  - Boss integration
+  - Balancing guidelines
+```
+
 ### 📖 Reference (6 dosya)
 
 #### 11. **CONTROLS.md** (500+ satır)
