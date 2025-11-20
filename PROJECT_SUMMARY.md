@@ -77,7 +77,26 @@ Engine: Unity 2D (2021.3 LTS+)
 ✅ PlayerStats          - Player properties
 ```
 
-### 7. **🛠️ Utility Systems** (4 dosya)
+### 7. **🗺️ Level Design System** (6 dosya) 🆕
+```
+✅ LevelConfigSO        - Level configuration data
+✅ LevelManager         - Wave management
+✅ WaveSpawner          - Enemy spawning
+✅ CameraLockController - Arena lock
+✅ DestructibleObject   - Breakable props
+✅ ParallaxBackground   - Depth illusion
+```
+
+### 8. **🎨 UI/UX System** (4 dosya) 🆕
+```
+✅ HUDManager           - Main HUD controller
+✅ DamagePopupUI        - Floating damage
+✅ MainMenuUI           - Main menu
+✅ PauseMenuUI          - Pause menu
+✅ UIEffects            - Screen shake, glitch
+```
+
+### 9. **🛠️ Utility Systems** (4 dosya)
 ```
 ✅ SortingOrderController - 2.5D depth sorting
 ✅ RagdollController    - Physics-based death
@@ -126,10 +145,10 @@ Engine: Unity 2D (2021.3 LTS+)
 
 ### Kod Metrikleri
 ```
-C# Scripts:             50+ dosya
-Kod Satırı:            ~8,000 satır
-Dokümantasyon:         ~18,000 satır
-TOPLAM:                ~26,000 satır
+C# Scripts:             71+ dosya
+Kod Satırı:            ~11,500 satır
+Dokümantasyon:         ~28,000 satır
+TOPLAM:                ~39,500 satır
 
 Namespace:             7 adet
 Interface:             3 adet
@@ -278,12 +297,13 @@ Manager Events:        10+ event
 ```
 ✅ Core gameplay: %100
 ✅ Combat system: %100
-✅ AI system: %90
+✅ AI system: %100
 ✅ Animation system: %100
-✅ UI/HUD: %30 (basic)
+✅ UI/HUD: %100 🆕
+✅ Level design: %100 🆕
 ✅ Progression: %60 (designed)
-✅ Boss fights: %0 (designed)
-✅ Level design: %0 (framework ready)
+✅ Boss fights: %30 (framework ready)
+✅ Content (assets): %10 (placeholders)
 ```
 
 ---
@@ -619,14 +639,19 @@ Features:
 ✅ Complete integration
 ```
 
-### UI/HUD: ⏳ %30
+### UI/HUD: ✅ %100 🆕
 ```
-✅ Basic framework
-⏳ Health bar
-⏳ Stamina bar
-⏳ Combo counter UI
-⏳ Style rank display
-⏳ Pause menu
+✅ HUDManager (kinetic, reactive)
+✅ Health/Rage/Stamina bars (smooth animation)
+✅ Dynamic portrait (health-based)
+✅ Combo counter UI (punch effect)
+✅ Style rank display (D-SSS)
+✅ Boss health bar
+✅ Pause menu (VHS glitch)
+✅ Main menu (animated)
+✅ Damage popups (physics-based)
+✅ Screen effects (shake, flash, glitch)
+✅ DOTween integration (optional)
 ```
 
 ### Content: ⏳ %10
