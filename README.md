@@ -55,11 +55,14 @@ Siber-noir atmosferde, Crazy Flasher serisinin akıcı dövüş hissiyle modern 
 - **Weapon Pickup**: Sopa, bıçak gibi silahları kullanma
 - **Stamina Barı**: Sprint ve dodge için dayanıklılık sistemi
 
-### 🤖 Düşman AI
-- **Token System**: Aynı anda en fazla 2 düşman saldırır
-- **Circle Strafe**: Oyuncuyu çevreleme davranışı
-- **5 Düşman Tipi**: Thug, Biker, Knife Jack, Fat Boy, Gunner
-- **Boss Mekanikleri**: 3 fazlı boss savaşları
+### 🤖 Düşman AI (3 Unique Types!)
+- **Basic Brawler**: Kalabalık halinde tehlikeli, basit kombolar, patrol davranışı
+- **Fast Dodger**: Hit-and-run taktikleri, %40 dodge şansı, kite yapan sinir bozucu düşman
+- **Heavy Tank**: Boss-like mini-tank, super armor, charge attacks, berserker mode
+- **Token System**: Aynı anda en fazla 2 düşman saldırır (adil oyun)
+- **Behavior Trees**: Her AI'nın kendi decision making sistemi
+- **Attack Patterns**: 10+ farklı saldırı pattern'i (Coroutine-based)
+- **Boss Mekanikleri**: 3 fazlı boss savaşları (planlı)
 
 ### 📊 Progression Sistemi
 - Para kazanma ve harcama (Black Market)
