@@ -38,10 +38,13 @@ Siber-noir atmosferde, Crazy Flasher serisinin akıcı dövüş hissiyle modern 
 
 ## ✨ Özellikler
 
-### 🥊 Dövüş Sistemi
-- **Combo Sistemi**: Zincir saldırılar, launcher ve juggle mekanikleri
-- **Hitbox/Hurtbox**: Frame-perfect vuruş tespiti
-- **Hitstop Effect**: Vuruş anında milisaniyelik duraklama
+### 🥊 Dövüş Sistemi (PRO-LEVEL!)
+- **🔥 ProComboSystem**: Data-driven, branching combos, cancel windows
+- **Input Buffering**: 0.2s buffer (lag hissi yok!)
+- **Cancel Windows**: Timing-based combo sistemi (skill gerektiren)
+- **Hit Stop Effect**: Vuruş anında milisaniyelik duraklama (tatmin edici!)
+- **Combo Branching**: Z→Z→Z veya Z→Z→X farklı sonuçlar (kod yazmadan!)
+- **ScriptableObject**: Tüm kombolar asset olarak (designer-friendly)
 - **Stil Puanı**: D'den SSS'ye kadar 7 seviye derecelendirme
 - **Rage Meter**: Dolduğunda "Execution Move" yapılabilir
 
@@ -195,6 +198,15 @@ Active Input Handling: Input System Package (New)
 | **ESC** | Pause |
 
 **Detaylı Kontroller**: [CONTROLS.md](CONTROLS.md) dosyasını okuyun!
+
+### 🔥 Combo Sistemi Örnekleri
+
+**Basic Combo**: Z → Z → Z (3-hit punch combo)  
+**Launcher Combo**: Z → Z → X (havaya kaldır)  
+**Juggle Combo**: Z → Z → X → Space → Z → Z (havada dövme)  
+**Branch Example**: Z → Z → Z (finisher) veya Z → Z → X (launcher)
+
+**Detaylı Combo Rehberi**: [PRO_COMBO_GUIDE.md](PRO_COMBO_GUIDE.md)
 
 ### Combo Örnekleri
 

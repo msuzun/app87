@@ -104,8 +104,17 @@ namespace NeonSyndicate.Combat
                 // Ses efekti
                 SoundManager.Instance?.PlaySFX("Hit_Impact");
 
-                // Hitstop (zaman yavaşlatma) efekti
-                ApplyHitstop();
+                // ProComboSystem'e hit confirm (varsa)
+                ProComboSystem proCombo = owner.GetComponent<ProComboSystem>();
+                if (proCombo != null)
+                {
+                    proCombo.OnHitEnemy();
+                }
+                else
+                {
+                    // Legacy hitstop (ProComboSystem yoksa)
+                    ApplyHitstop();
+                }
 
                 // Tek vuruşsa deaktif et
                 if (!canHitMultiple)
